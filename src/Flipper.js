@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Coin from "./Coin";
+import { choice } from "./helper";
 
 class Flipper extends Component {
   constructor(props) {
@@ -7,32 +8,34 @@ class Flipper extends Component {
     this.state = {
       headCount: 0,
       totalCount: 0,
-      isHead: false,
+      currCoin: null,
     };
     this.handleClick = this.handleClick.bind(this);
   }
-  incrementTotalCount(currentState) {
-    return { totalCount: currentState.totalCount + 1 };
-  }
-  incrementHeadCount(currentState) {
-    return { headCount: currentState.headCount + 1 };
-  }
-  handleClick() {
-    this.setState(this.incrementTotalCount);
-    const randomNum = Math.floor(Math.random() * 2);
-    if (randomNum === 1) {
-      this.setState({ isHead: true });
-      this.setState(this.incrementHeadCount);
-    }
+  static defaultProps = {
+    coins: [
+      { side: "Heads", imgSrc: "images/Head.jpg" },
+      { side: "Tails", imgSrc: "images/Tail.jpg" },
+    ],
+  };
+
+  handleClick(e) {
+    const newCoin = choice(this.props.coins);
+    this.setState((currState) => {
+      return {
+        ...currState,
+        currCoin: newCoin,
+        totalCount: currState.totalCount + 1,
+        headCount: currState.headCount + (newCoin.side == "Heads" ? +1 : 0),
+      };
+    });
   }
   render() {
-    const { headCount, totalCount, isHead } = this.state;
-    const imgSrc =
-      totalCount > 0 ? (isHead ? "images/Head.jpg" : "images/Tail.jpg") : "";
+    console.log("$$$$$$$$", this.props.coins);
+    const { headCount, totalCount, currCoin } = this.state;
     return (
       <div>
-        <Coin imgSrc={imgSrc} />
-        {/* <img src="images/Head.jpg" /> */}
+        {currCoin && <Coin info={currCoin} />}
         <p>
           Out of {totalCount}, there have been {headCount} heads and{" "}
           {totalCount - headCount} tails.

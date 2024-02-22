@@ -1,14 +1,11 @@
 import React, { Component } from "react";
 import "./Coin.css";
 class Coin extends Component {
-  static defaultProps = {
-    imgSrc: "",
-  };
   render() {
-    const { imgSrc } = this.props;
+    const { info } = this.props;
     return (
       <div className="Coin">
-        <img className="Coin-Img" src={imgSrc} />
+        <img className="Coin-Img" src={info.imgSrc} alt={info.side} />
       </div>
     );
   }
